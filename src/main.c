@@ -4,7 +4,7 @@ int main(void) {
     HAL_Init();
 
     // Enable GPIOA clock
-    __HAL_RCC_GPIOC_CLK_ENABLE();
+    __HAL_RCC_GPIOB_CLK_ENABLE();
 
     // Configure PB5 as output
     GPIO_InitTypeDef GPIO_InitStruct = {0};
