@@ -10,6 +10,7 @@ set(STM32_DRIVER_TYPE "LL" CACHE STRING "Driver type: LL, HAL, BARE, MIXED")
 
 # load dependencies
 include(cmake/drivers.cmake)
+include(cmake/stm32-helpers.cmake)
 
 # ======================================================================
 # Set startup file and linker script based on MCU model
@@ -73,5 +74,6 @@ target_link_options(${PROJECT_NAME}.elf PRIVATE
     -T${LINKER_SCRIPT}
 )
 
-target_link
+stm32_add_hex_bin_targets(${PROJECT_NAME}.elf)
+
 
