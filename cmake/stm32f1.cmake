@@ -24,6 +24,7 @@ set(LINKER_FLAGS
     --specs=nano.specs
     -Wl,--gc-sections
     -Wl,--print-memory-usage
+    -Wl,-Map=${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_PROJECT_NAME}.map
 )
 target_link_options(stm32_f1_flags INTERFACE
     ${CPU_FLAGS}
