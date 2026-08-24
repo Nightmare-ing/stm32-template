@@ -63,18 +63,19 @@ endif()
 # Create executable target and linking
 # ======================================================================
 # add executable
-add_executable(${PROJECT_NAME}.elf ${PROJECT_SOURCES})
+add_executable(${PROJECT_NAME} ${PROJECT_SOURCES})
+set_target_properties(${PROJECT_NAME} PROPERTIES SUFFIX ".elf")
 
-target_link_libraries(${PROJECT_NAME}.elf PRIVATE
+target_link_libraries(${PROJECT_NAME} PRIVATE
     ${CHIP_FLAGS_LIB}
     ${DRIVER_LIB}
 )
-target_include_directories(${PROJECT_NAME}.elf PRIVATE src bsp)
+target_include_directories(${PROJECT_NAME} PRIVATE src bsp)
 
-target_link_options(${PROJECT_NAME}.elf PRIVATE 
+target_link_options(${PROJECT_NAME} PRIVATE
     -T${LINKER_SCRIPT}
 )
 
-stm32_add_hex_bin_targets(${PROJECT_NAME}.elf)
+stm32_add_hex_bin_targets(${PROJECT_NAME})
 
 
