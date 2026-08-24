@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
 project(stm32-template C ASM)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # ======================================================================
 # Set default chip family and model (can be overridden by Presets or CLI)
@@ -16,8 +17,8 @@ include(cmake/stm32-helpers.cmake)
 # Set startup file and linker script based on MCU model
 # ======================================================================
 string(TOLOWER ${MCU_MODEL} MCU_MODEL_LOWER)
-set(STARTUP_FILE "${CMAKE_CURRENT_SOURCE_DIR}/bsp/startup_${MCU_MODEL_LOWER}.s")
-set(LINKER_SCRIPT "${CMAKE_CURRENT_SOURCE_DIR}/bsp/${MCU_MODEL}_FLASH.ld")
+set(STARTUP_FILE "${CMAKE_CURRENT_SOURCE_DIR}/bsp/startup/startup_${MCU_MODEL_LOWER}.s")
+set(LINKER_SCRIPT "${CMAKE_CURRENT_SOURCE_DIR}/bsp/ldscripts/${MCU_MODEL}_FLASH.ld")
 
 string(TOLOWER ${MCU_FAMILY} MCU_FAMILY_LOWER)
 set(PROJECT_SOURCES
@@ -29,19 +30,19 @@ set(PROJECT_SOURCES
 if(STM32_DRIVER_TYPE STREQUAL "LL")
     message(STATUS "Configuring project for ${MCU_MODEL} with LL driver")
     list(APPEND PROJECT_SOURCES
-        ${stm32_hal_driver_SOURCE_DIR}/Src/stm32${MCU_FAMILY_LOWER}xx_ll_gpio.c
-        ${stm32_hal_driver_SOURCE_DIR}/Src/stm32${MCU_FAMILY_LOWER}xx_ll_rcc.c
-        ${stm32_hal_driver_SOURCE_DIR}/Src/stm32${MCU_FAMILY_LOWER}xx_ll_usart.c
+        ${stm32_hal_driver_SOURCE_DIR}/Src/${MCU_FAMILY_LOWER}xx_ll_gpio.c
+        ${stm32_hal_driver_SOURCE_DIR}/Src/${MCU_FAMILY_LOWER}xx_ll_rcc.c
+        ${stm32_hal_driver_SOURCE_DIR}/Src/${MCU_FAMILY_LOWER}xx_ll_usart.c
     )
     set(DRIVER_LIB stm32::ll)
 
 elseif(STM32_DRIVER_TYPE STREQUAL "HAL")
     message(STATUS "Configuring project for ${MCU_MODEL} with HAL driver")
     list(APPEND PROJECT_SOURCES
-        ${stm32_hal_driver_SOURCE_DIR}/Src/stm32${MCU_FAMILY_LOWER}xx_hal_gpio.c
-        ${stm32_hal_driver_SOURCE_DIR}/Src/stm32${MCU_FAMILY_LOWER}xx_hal_rcc.c
-        ${stm32_hal_driver_SOURCE_DIR}/Src/stm32${MCU_FAMILY_LOWER}xx_hal_uart.c
-        ${stm32_hal_driver_SOURCE_DIR}/Src/stm32${MCU_FAMILY_LOWER}xx_hal_cortex.c
+        ${stm32_hal_driver_SOURCE_DIR}/Src/${MCU_FAMILY_LOWER}xx_hal.c
+        ${stm32_hal_driver_SOURCE_DIR}/Src/${MCU_FAMILY_LOWER}xx_hal_rcc.c
+        ${stm32_hal_driver_SOURCE_DIR}/Src/${MCU_FAMILY_LOWER}xx_hal_gpio.c
+        ${stm32_hal_driver_SOURCE_DIR}/Src/${MCU_FAMILY_LOWER}xx_hal_cortex.c
     )
     set(DRIVER_LIB stm32::hal)
 

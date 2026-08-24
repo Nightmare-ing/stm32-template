@@ -6,13 +6,21 @@
       "displayName": "STM32F103 (HAL Driver)",
       "generator": "Ninja",
       "binaryDir": "${sourceDir}/build/f103-hal",
-      "toolchainFile": "${sourceDir}/cmake/toolchains/arm-none-eabi.cmake",
+      "toolchainFile": "${sourceDir}/cmake/arm-none-eabi-toolchain.cmake",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug",
         "MCU_FAMILY": "STM32F1",
         "MCU_MODEL": "STM32F103xE",
         "STM32_DRIVER_TYPE": "HAL"
       }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "f103-hal",
+      "displayName": "Build STM32F103 (HAL Driver)",
+      "configurePreset": "f103-hal",
+      "jobs": 0
     }
   ]
 }
