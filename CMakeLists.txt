@@ -1,16 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
 project(stm32-template C ASM)
 
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-if (CMAKE_EXPORT_COMPILE_COMMANDS)
-    file(CREATE_LINK
-        ${CMAKE_BINARY_DIR}/compile_commands.json
-        ${CMAKE_SOURCE_DIR}/compile_commands.json
-        SYMBOLIC
-        COPY_ON_ERROR
-    )
-endif()
-
 # ======================================================================
 # Set default chip family and model (can be overridden by Presets or CLI)
 # ======================================================================
@@ -86,5 +76,5 @@ target_link_options(${PROJECT_NAME} PRIVATE
 )
 
 stm32_add_hex_bin_targets(${PROJECT_NAME})
-
+stm32_setup_compile_commands()
 
