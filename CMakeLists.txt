@@ -26,25 +26,13 @@ set(PROJECT_SOURCES
     ${STARTUP_FILE}
 )
 
+# ======================================================================
+# Configure libraries based on driver type and MCU family
+# ======================================================================
 if(STM32_DRIVER_TYPE STREQUAL "LL")
-    message(STATUS "Configuring project for ${MCU_MODEL} with LL driver")
-    list(APPEND PROJECT_SOURCES
-        ${stm32_hal_driver_SOURCE_DIR}/Src/${MCU_FAMILY_LOWER}xx_ll_gpio.c
-        ${stm32_hal_driver_SOURCE_DIR}/Src/${MCU_FAMILY_LOWER}xx_ll_rcc.c
-        ${stm32_hal_driver_SOURCE_DIR}/Src/${MCU_FAMILY_LOWER}xx_ll_usart.c
-    )
     set(DRIVER_LIB stm32::ll)
-
 elseif(STM32_DRIVER_TYPE STREQUAL "HAL")
-    message(STATUS "Configuring project for ${MCU_MODEL} with HAL driver")
-    list(APPEND PROJECT_SOURCES
-        ${stm32_hal_driver_SOURCE_DIR}/Src/${MCU_FAMILY_LOWER}xx_hal.c
-        ${stm32_hal_driver_SOURCE_DIR}/Src/${MCU_FAMILY_LOWER}xx_hal_rcc.c
-        ${stm32_hal_driver_SOURCE_DIR}/Src/${MCU_FAMILY_LOWER}xx_hal_gpio.c
-        ${stm32_hal_driver_SOURCE_DIR}/Src/${MCU_FAMILY_LOWER}xx_hal_cortex.c
-    )
     set(DRIVER_LIB stm32::hal)
-
 elseif(STM32_DRIVER_TYPE STREQUAL "BARE")
     message(STATUS "Configuring project for ${MCU_MODEL} with bare-metal / CMSIS only")
     set(DRIVER_LIB stm32::cmsis)

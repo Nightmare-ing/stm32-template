@@ -23,6 +23,11 @@ target_compile_definitions(stm32_ll INTERFACE
     ${MCU_MODEL}
     USE_FULL_LL_DRIVER
 )
+target_sources(stm32_ll INTERFACE
+    ${stm32_hal_driver_SOURCE_DIR}/Src/${MCU_FAMILY_LOWER}xx_ll_gpio.c
+    ${stm32_hal_driver_SOURCE_DIR}/Src/${MCU_FAMILY_LOWER}xx_ll_rcc.c
+    ${stm32_hal_driver_SOURCE_DIR}/Src/${MCU_FAMILY_LOWER}xx_ll_usart.c
+)
 add_library(stm32::ll ALIAS stm32_ll)
 
 # ======================================================================
@@ -38,5 +43,11 @@ target_include_directories(stm32_hal INTERFACE
 target_compile_definitions(stm32_hal INTERFACE
     ${MCU_MODEL}
     USE_HAL_DRIVER
+)
+target_sources(stm32_hal INTERFACE
+    ${stm32_hal_driver_SOURCE_DIR}/Src/${MCU_FAMILY_LOWER}xx_hal.c
+    ${stm32_hal_driver_SOURCE_DIR}/Src/${MCU_FAMILY_LOWER}xx_hal_rcc.c
+    ${stm32_hal_driver_SOURCE_DIR}/Src/${MCU_FAMILY_LOWER}xx_hal_gpio.c
+    ${stm32_hal_driver_SOURCE_DIR}/Src/${MCU_FAMILY_LOWER}xx_hal_cortex.c
 )
 add_library(stm32::hal ALIAS stm32_hal)
