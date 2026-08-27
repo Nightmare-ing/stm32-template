@@ -1,6 +1,10 @@
 cmake_minimum_required(VERSION 3.20)
 project(stm32-template C ASM)
 
+set(CMAKE_C_STANDARD 11)
+set(CMAKE_C_STANDARD_REQUIRED ON)
+set(CMAKE_C_EXTENSIONS OFF)
+
 # ======================================================================
 # Set default chip family and model (can be overridden by Presets or CLI)
 # ======================================================================
