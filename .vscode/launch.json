@@ -5,6 +5,7 @@
       "type": "probe-rs-debug",
       "request": "launch",
       "name": "Probe-rs Debug",
+      "preLaunchTask": "CMake: build with preset",
       "cwd": "${workspaceFolder}",
       "chip": "STM32F103ZETx",
       "flashingConfig": {
