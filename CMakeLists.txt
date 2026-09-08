@@ -7,6 +7,8 @@ project(stm32-template
 # Use more efficient FetchContent_MakeAvailable() call, which is introduced in CMake 3.30.
 set(CMAKE_POLICY_DEFAULT_CMP0168 NEW)
 
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 set(CMAKE_C_EXTENSIONS OFF)
@@ -26,16 +28,22 @@ set(MCU_FAMILY_SHORT ${_mcu_family_short} CACHE INTERNAL "Short MCU family")
 string(TOLOWER ${MCU_MODEL} _mcu_model_lower)
 set(MCU_MODEL_LOWER ${_mcu_model_lower} CACHE INTERNAL "Lowercase MCU model")
 
+
+# ======================================================================
+# Load Dependencies, BSP, and CMake Helpers
+# ======================================================================
 # load dependencies
 include(dependencies.cmake)
-include(cmake/stm32-utils.cmake)
 
 # load BSP (Board Support Package) for the selected MCU family
 add_subdirectory(bsp)
 
+# load CMake helper functions for STM32 projects
+include(stm32-utils)
+
 
 # ======================================================================
-# Create executable target and linking
+# Create executable target
 # ======================================================================
 # add executable
 add_executable(${PROJECT_NAME}
