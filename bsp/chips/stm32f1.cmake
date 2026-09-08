@@ -11,8 +11,6 @@ set(CPU_FLAGS
 
 # Bare-metal common flags for optimization
 set(ARCH_OPT_FLAGS
-    -Wall                           # Enable all warnings
-    -Wextra                         # Enable extra warnings
     -fdata-sections                 # Prepare for GC optimization
     -ffunction-sections
 )
@@ -25,20 +23,3 @@ target_link_options(bsp_stm32f1_mcu_config INTERFACE
 )
 
 add_library(bsp::mcu_config ALIAS bsp_stm32f1_mcu_config)
-
-# ======================================================================
-# Flags for final ELF target
-# ======================================================================
-add_library(stm32_f1_linker INTERFACE)
-target_link_libraries(stm32_f1_linker INTERFACE bsp::mcu_config)
-set(LINKER_FLAGS
-    --specs=nano.specs
-    -Wl,--gc-sections
-    -Wl,--print-memory-usage
-    "-Wl,-Map=$<TARGET_PROPERTY:NAME>.map"
-)
-target_link_options(stm32_f1_linker INTERFACE
-    ${LINKER_FLAGS}
-)
-
-add_library(stm32::f1_linker ALIAS stm32_f1_linker)

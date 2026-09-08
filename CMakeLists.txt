@@ -11,6 +11,7 @@ set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 set(CMAKE_C_EXTENSIONS OFF)
 
+
 # ======================================================================
 # Set default chip family and model (can be overridden by Presets or CLI)
 # ======================================================================
@@ -22,62 +23,32 @@ string(TOLOWER ${MCU_FAMILY} _mcu_family_lower)
 set(MCU_FAMILY_LOWER ${_mcu_family_lower} CACHE INTERNAL "Lowercase MCU family")
 string(SUBSTRING ${MCU_FAMILY_LOWER} 5 -1 _mcu_family_short) # e.g., extract "f1"
 set(MCU_FAMILY_SHORT ${_mcu_family_short} CACHE INTERNAL "Short MCU family")
-
-if(MCU_FAMILY STREQUAL "STM32F1")
-    include(cmake/stm32f1.cmake)
-    set(CHIP_FLAGS_LIB bsp::mcu_config)
-elseif(MCU_FAMILY STREQUAL "STM32H7")
-    include(cmake/stm32h7.cmake)
-    set(CHIP_FLAGS_LIB bsp::mcu_config)
-endif()
+string(TOLOWER ${MCU_MODEL} _mcu_model_lower)
+set(MCU_MODEL_LOWER ${_mcu_model_lower} CACHE INTERNAL "Lowercase MCU model")
 
 # load dependencies
 include(dependencies.cmake)
 include(cmake/stm32-utils.cmake)
 
-# ======================================================================
-# Set startup file and linker script based on MCU model
-# ======================================================================
-string(TOLOWER ${MCU_MODEL} MCU_MODEL_LOWER)
-set(STARTUP_FILE "${CMAKE_CURRENT_SOURCE_DIR}/bsp/startup/startup_${MCU_MODEL_LOWER}.s")
-set(LINKER_SCRIPT "${CMAKE_CURRENT_SOURCE_DIR}/bsp/ldscripts/${MCU_MODEL}_FLASH.ld")
+# load BSP (Board Support Package) for the selected MCU family
+add_subdirectory(bsp)
 
-string(TOLOWER ${MCU_FAMILY} MCU_FAMILY_LOWER)
-set(PROJECT_SOURCES
-    src/main.c
-    bsp/system_${MCU_FAMILY_LOWER}xx.c
-    ${STARTUP_FILE}
-)
-
-# ======================================================================
-# Configure libraries based on driver type and MCU family
-# ======================================================================
-if(STM32_DRIVER_TYPE STREQUAL "LL")
-    set(DRIVER_LIB stm32::ll)
-elseif(STM32_DRIVER_TYPE STREQUAL "HAL")
-    set(DRIVER_LIB stm32::hal)
-elseif(STM32_DRIVER_TYPE STREQUAL "BARE")
-    message(STATUS "Configuring project for ${MCU_MODEL} with bare-metal / CMSIS only")
-    set(DRIVER_LIB stm32::cmsis)
-endif()
 
 # ======================================================================
 # Create executable target and linking
 # ======================================================================
 # add executable
-add_executable(${PROJECT_NAME} ${PROJECT_SOURCES})
+add_executable(${PROJECT_NAME}
+    src/main.c
+)
 set_target_properties(${PROJECT_NAME} PROPERTIES SUFFIX ".elf")
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
-    ${CHIP_FLAGS_LIB}
-    ${DRIVER_LIB}
-    stm32::f1_linker
+    bsp::baremetal_linker
+    bsp::startup
+    bsp::driver
 )
-target_include_directories(${PROJECT_NAME} PRIVATE src bsp)
-
-target_link_options(${PROJECT_NAME} PRIVATE
-    -T${LINKER_SCRIPT}
-)
+target_include_directories(${PROJECT_NAME} PRIVATE src)
 target_compile_options(${PROJECT_NAME} PRIVATE
     -Wall                           # Enable all warnings
     -Wextra                         # Enable extra warnings
