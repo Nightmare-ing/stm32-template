@@ -32,7 +32,7 @@ elseif(MCU_FAMILY STREQUAL "STM32H7")
 endif()
 
 # load dependencies
-include(cmake/dependencies.cmake)
+include(dependencies.cmake)
 include(cmake/stm32-utils.cmake)
 
 # ======================================================================
