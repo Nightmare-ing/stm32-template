@@ -12,5 +12,11 @@ target_compile_options(${PROJECT_NAME} PRIVATE
     -Wall                           # Enable all warnings
     -Wextra                         # Enable extra warnings
 )
+set(_map_file "$<TARGET_FILE_DIR:${PROJECT_NAME}>/$<TARGET_PROPERTY:NAME>.map")
+target_link_options(${PROJECT_NAME} PRIVATE
+    -Wl,--print-memory-usage
+    "-Wl,-Map=${_map_file}"
+)
+set_property(TARGET ${PROJECT_NAME} APPEND PROPERTY ADDITIONAL_CLEAN_FILES "${_map_file}")
 
 stm32_add_hex_bin_targets(${PROJECT_NAME})

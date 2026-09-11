@@ -33,8 +33,6 @@ add_library(bsp_baremetal_linker INTERFACE)
 target_link_options(bsp_baremetal_linker INTERFACE
     --specs=nano.specs
     -Wl,--gc-sections
-    -Wl,--print-memory-usage
-    "-Wl,-Map=$<TARGET_PROPERTY:NAME>.map"
 )
 add_library(bsp::baremetal_linker ALIAS bsp_baremetal_linker)
 
