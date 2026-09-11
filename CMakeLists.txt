@@ -13,6 +13,14 @@ set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 set(CMAKE_C_EXTENSIONS OFF)
 
+# Create compile_commands.json in the build directory and link it to the source directory
+file(CREATE_LINK
+    ${CMAKE_BINARY_DIR}/compile_commands.json
+    ${CMAKE_SOURCE_DIR}/compile_commands.json
+    SYMBOLIC
+    COPY_ON_ERROR
+)
+
 
 # ======================================================================
 # Set default chip family and model (can be overridden by Presets or CLI)
@@ -35,33 +43,12 @@ set(MCU_MODEL_LOWER ${_mcu_model_lower} CACHE INTERNAL "Lowercase MCU model")
 # load dependencies
 include(dependencies.cmake)
 
-# load BSP (Board Support Package) for the selected MCU family
-add_subdirectory(bsp)
-
 # load CMake helper functions for STM32 projects
 include(stm32-utils)
 
-
-# ======================================================================
-# Create executable target
-# ======================================================================
-# add executable
-add_executable(${PROJECT_NAME}
-    src/main.c
-)
-set_target_properties(${PROJECT_NAME} PROPERTIES SUFFIX ".elf")
-
-target_link_libraries(${PROJECT_NAME} PRIVATE
-    bsp::baremetal_linker
-    bsp::startup
-    bsp::driver
-)
-target_include_directories(${PROJECT_NAME} PRIVATE src)
-target_compile_options(${PROJECT_NAME} PRIVATE
-    -Wall                           # Enable all warnings
-    -Wextra                         # Enable extra warnings
-)
-
-stm32_add_hex_bin_targets(${PROJECT_NAME})
-stm32_setup_compile_commands()
+# load BSP (Board Support Package) and ELF App when cross-compiling
+if(CMAKE_CROSSCOMPILING)
+    add_subdirectory(bsp)
+    add_subdirectory(src)
+endif()
 
