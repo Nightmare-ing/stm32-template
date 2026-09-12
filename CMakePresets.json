@@ -11,7 +11,8 @@
         "CMAKE_BUILD_TYPE": "Debug",
         "MCU_FAMILY": "STM32F1",
         "MCU_MODEL": "STM32F103xE",
-        "STM32_DRIVER_TYPE": "HAL"
+        "STM32_DRIVER_TYPE": "HAL",
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
       }
     }
   ],
