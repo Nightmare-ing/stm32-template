@@ -93,3 +93,11 @@ else()
     message(FATAL_ERROR "Unsupported STM32_DRIVER_TYPE: ${STM32_DRIVER_TYPE}")
 endif()
 
+# ======================================================================
+# Board Specific Configs, including board drivers and peripherals
+# ======================================================================
+if(BOARD STREQUAL "ATK_WARSHIP_F103")
+    add_subdirectory(boards/atk_warship_f103)
+else()
+    message(FATAL_ERROR "Unsupported BOARD: ${BOARD}")
+endif()

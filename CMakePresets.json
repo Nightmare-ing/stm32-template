@@ -9,6 +9,7 @@
       "toolchainFile": "${sourceDir}/cmake/arm-none-eabi-toolchain.cmake",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug",
+        "BOARD": "ATK_WARSHIP_F103",
         "MCU_FAMILY": "STM32F1",
         "MCU_MODEL": "STM32F103xE",
         "STM32_DRIVER_TYPE": "HAL",

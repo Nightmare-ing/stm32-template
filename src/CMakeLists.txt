@@ -8,6 +8,7 @@ target_link_libraries(${TARGET_NAME} PRIVATE
     bsp::baremetal_linker
     bsp::startup
     bsp::driver
+    bsp::led
 )
 target_compile_options(${TARGET_NAME} PRIVATE
     -Wall                           # Enable all warnings

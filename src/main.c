@@ -1,21 +1,18 @@
+#include "board/led.h"
+#include "led/led.h"
 #include "stm32f1xx_hal.h"
 
 int main(void) {
     HAL_Init();
 
-    // Enable GPIOB clock
-    __HAL_RCC_GPIOB_CLK_ENABLE();
+    // initialize LED0
+    board_led_init();
 
-    // Configure PB5 as output
-    GPIO_InitTypeDef GPIO_InitStruct = {0};
-    GPIO_InitStruct.Pin = GPIO_PIN_5;
-    GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-    GPIO_InitStruct.Pull = GPIO_NOPULL;
-    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-    HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+    struct led led0;
+    led_init(&led0, &board_led0_io);
 
     while (1) {
-        HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_5);
+        led_toggle(&led0);
         HAL_Delay(500);
     }
 

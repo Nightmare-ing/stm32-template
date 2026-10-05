@@ -3,6 +3,7 @@ project(stm32-template
     VERSION 1.0
     DESCRIPTION "Template for STM32 projects"
     LANGUAGES C ASM)
+set(STM32_LEARNING_NAMESPACE stm32-template)
 
 # Use more efficient FetchContent_MakeAvailable() call, which is introduced in CMake 3.30.
 set(CMAKE_POLICY_DEFAULT_CMP0168 NEW)
@@ -38,17 +39,48 @@ set(MCU_MODEL_LOWER ${_mcu_model_lower} CACHE INTERNAL "Lowercase MCU model")
 
 
 # ======================================================================
-# Load Dependencies, BSP, and CMake Helpers
+# Load CMake Helpers
 # ======================================================================
-# load dependencies
-include(dependencies.cmake)
-
-# load CMake helper functions for STM32 projects
 include(stm32-utils)
 
+
+# ======================================================================
+# Load Dependencies, BSP, and CMake Helpers
+# ======================================================================
+# Load dependencies
+include(dependencies.cmake)
+
+
+# ======================================================================
+# Stable architecture interface
+# ======================================================================
+add_library(${PROJECT_NAME}_architecture INTERFACE)
+add_library(${STM32_LEARNING_NAMESPACE}::architecture
+    ALIAS ${PROJECT_NAME}_architecture
+)
+
+
+# ======================================================================
+# Platform-independent Components
+# ======================================================================
+add_subdirectory(components/led)
+
+
+# ======================================================================
+# Platform-specific Targets
+# ======================================================================
 # load BSP (Board Support Package) and ELF App when cross-compiling
 if(CMAKE_CROSSCOMPILING)
+    # Create bsp::mcu_config and board adapters
+    # Board adapters can now safely depend on component targets
     add_subdirectory(bsp)
+
+    # Populate the previously empty architecture interface
+    target_link_libraries(${PROJECT_NAME}_architecture INTERFACE
+        bsp::mcu_config
+    )
+
+    # Final consumer
     add_subdirectory(src)
 endif()
 
