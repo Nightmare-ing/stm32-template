@@ -32,6 +32,7 @@ add_library(bsp::startup ALIAS bsp_startup)
 add_library(bsp_baremetal_linker INTERFACE)
 target_link_options(bsp_baremetal_linker INTERFACE
     --specs=nano.specs
+    --specs=nosys.specs
     -Wl,--gc-sections
 )
 add_library(bsp::baremetal_linker ALIAS bsp_baremetal_linker)
