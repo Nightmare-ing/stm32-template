@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.25...4.4)
-project(stm32-template
+project(stm32_template
     VERSION 1.0
     DESCRIPTION "Template for STM32 projects"
     LANGUAGES C ASM)

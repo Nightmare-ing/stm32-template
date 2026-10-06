@@ -17,10 +17,11 @@
   ],
   "buildPresets": [
     {
-      "name": "f103-hal",
-      "displayName": "Build STM32F103 (HAL Driver)",
+      "name": "f103-hal-lab1-led",
+      "displayName": "Lab1: Led Blink",
       "configurePreset": "f103-hal",
-      "jobs": 0
+      "jobs": 0,
+      "targets": ["stm32_template_lab1_led"]
     }
   ]
 }
