@@ -1,4 +1,32 @@
 # ======================================================================
+# Specify BOARD MCU Family and Model, fetch dependencies
+# ======================================================================
+if(NOT DEFINED BOARD)
+    message(FATAL_ERROR "BOARD is not defined. Please specify a board in CMake Presets or CLI.")
+endif()
+
+set(BOARD_DIR "${CMAKE_CURRENT_LIST_DIR}/boards/${BOARD}")
+if(NOT EXISTS "${BOARD_DIR}/board.cmake")
+    message(FATAL_ERROR "Unknown BOARD: ${BOARD}. No board.cmake found in ${BOARD_DIR}")
+endif()
+include("${BOARD_DIR}/board.cmake")
+
+
+set(MCU_FAMILY ${BOARD_MCU_FAMILY})
+set(MCU_MODEL ${BOARD_MCU_MODEL})
+set(STM32_DRIVER_TYPE "LL" CACHE STRING "Driver type: LL, HAL, BARE, MIXED")
+
+string(TOLOWER ${MCU_FAMILY} _mcu_family_lower)
+set(MCU_FAMILY_LOWER ${_mcu_family_lower} CACHE INTERNAL "Lowercase MCU family")
+string(SUBSTRING ${MCU_FAMILY_LOWER} 5 -1 _mcu_family_short) # e.g., extract "f1"
+set(MCU_FAMILY_SHORT ${_mcu_family_short} CACHE INTERNAL "Short MCU family")
+string(TOLOWER ${MCU_MODEL} _mcu_model_lower)
+set(MCU_MODEL_LOWER ${_mcu_model_lower} CACHE INTERNAL "Lowercase MCU model")
+
+include("${CMAKE_CURRENT_LIST_DIR}/dependencies.cmake")
+
+
+# ======================================================================
 # Chip Specific Configs
 # ======================================================================
 set(_chip_config_file "${CMAKE_CURRENT_LIST_DIR}/chips/${MCU_FAMILY_LOWER}.cmake")

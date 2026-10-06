@@ -1,7 +1,7 @@
 add_library(bsp_atk_warship_f103_led STATIC)
 
 target_sources(bsp_atk_warship_f103_led PRIVATE
-    src/led.c
+    adapters/led.c
 )
 target_sources(bsp_atk_warship_f103_led PUBLIC
     FILE_SET HEADERS

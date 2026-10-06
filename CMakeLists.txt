@@ -24,31 +24,9 @@ file(CREATE_LINK
 
 
 # ======================================================================
-# Set default chip family and model (can be overridden by Presets or CLI)
-# ======================================================================
-set(MCU_FAMILY "STM32F1" CACHE STRING "MCU family, e.g. STM32F1, STM32F4")
-set(MCU_MODEL "STM32F103xE" CACHE STRING "MCU model, e.g. STM32F103xE, STM32F401xE")
-set(STM32_DRIVER_TYPE "LL" CACHE STRING "Driver type: LL, HAL, BARE, MIXED")
-
-string(TOLOWER ${MCU_FAMILY} _mcu_family_lower)
-set(MCU_FAMILY_LOWER ${_mcu_family_lower} CACHE INTERNAL "Lowercase MCU family")
-string(SUBSTRING ${MCU_FAMILY_LOWER} 5 -1 _mcu_family_short) # e.g., extract "f1"
-set(MCU_FAMILY_SHORT ${_mcu_family_short} CACHE INTERNAL "Short MCU family")
-string(TOLOWER ${MCU_MODEL} _mcu_model_lower)
-set(MCU_MODEL_LOWER ${_mcu_model_lower} CACHE INTERNAL "Lowercase MCU model")
-
-
-# ======================================================================
 # Load CMake Helpers
 # ======================================================================
 include(stm32-utils)
-
-
-# ======================================================================
-# Load Dependencies, BSP, and CMake Helpers
-# ======================================================================
-# Load dependencies
-include(dependencies.cmake)
 
 
 # ======================================================================
