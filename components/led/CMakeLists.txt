@@ -10,8 +10,10 @@ target_sources(component_led PUBLIC
     FILES include/led/led.h
 )
 
-target_link_libraries(component_led
-    PRIVATE
-        ${PROJECT_NAME}_architecture)
+target_link_libraries(component_led PRIVATE
+    ${PROJECT_NAME}::project_options
+    ${PROJECT_NAME}::compiler_warnings
+    ${PROJECT_NAME}::target_abi
+)
 
 add_library(components::led ALIAS component_led)

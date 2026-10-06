@@ -30,11 +30,42 @@ include(stm32-utils)
 
 
 # ======================================================================
-# Stable architecture interface
+# Core Interface Targets (Project Options, Warnings, and Machine ABI)
+#
+# Provides a three-pillar interface contract for all downstream targets:
+#   1. ${PROJECT_NAME}::project_options      - Language standard (C11) & common codegen flags
+#   2. ${PROJECT_NAME}::compiler_warnings    - Strict code quality & static diagnostic flags
+#   3. ${PROJECT_NAME}::target_abi           - Target-dependent machine ISA/ABI bridge
+#                                              (No-op on Host tests, bridges bsp::mcu_config on MCU)
 # ======================================================================
-add_library(${PROJECT_NAME}_architecture INTERFACE)
-add_library(${STM32_LEARNING_NAMESPACE}::architecture
-    ALIAS ${PROJECT_NAME}_architecture
+# 1. Project-wide language standards and dead-code stripping optimizations
+add_library(${PROJECT_NAME}_project_options INTERFACE)
+add_library(${PROJECT_NAME}::project_options ALIAS ${PROJECT_NAME}_project_options)
+
+# Bare-metal common flags for optimization
+target_compile_options(${PROJECT_NAME}_project_options INTERFACE
+    -ffunction-sections
+    -fdata-sections # prepare for GC optimization
+)
+
+# 2. Strict diagnostic warnings (isolated from third-party vendor libraries)
+add_library(${PROJECT_NAME}_compiler_warnings INTERFACE)
+add_library(${PROJECT_NAME}::compiler_warnings ALIAS ${PROJECT_NAME}_compiler_warnings)
+
+target_compile_options(${PROJECT_NAME}_compiler_warnings INTERFACE
+    $<$<C_COMPILER_ID:GNU,Clang>:
+        -Wall
+        -Wextra
+        -Wshadow
+        -Wconversion
+        -Wundef
+    >
+)
+
+# 3. Machine architecture & ISA bridge (multiplexes seamlessly between MCU and Host)
+add_library(${PROJECT_NAME}_target_abi INTERFACE)
+add_library(${PROJECT_NAME}::target_abi
+    ALIAS ${PROJECT_NAME}_target_abi
 )
 
 
@@ -54,7 +85,7 @@ if(CMAKE_CROSSCOMPILING)
     add_subdirectory(bsp)
 
     # Populate the previously empty architecture interface
-    target_link_libraries(${PROJECT_NAME}_architecture INTERFACE
+    target_link_libraries(${PROJECT_NAME}_target_abi INTERFACE
         bsp::mcu_config
     )
 

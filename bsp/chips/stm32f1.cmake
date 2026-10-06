@@ -9,14 +9,8 @@ set(CPU_FLAGS
     -mfloat-abi=soft
 )
 
-# Bare-metal common flags for optimization
-set(ARCH_OPT_FLAGS
-    -fdata-sections                 # Prepare for GC optimization
-    -ffunction-sections
-)
 target_compile_options(bsp_stm32f1_mcu_config INTERFACE
     ${CPU_FLAGS}
-    ${ARCH_OPT_FLAGS}
 )
 target_link_options(bsp_stm32f1_mcu_config INTERFACE
     ${CPU_FLAGS}
