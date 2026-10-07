@@ -11,6 +11,7 @@ int led_init(struct led *led, const struct led_io *io) {
     led->is_on = false;
 
     led->io.set(led->io.context, led->is_on);
+    return 0;
 }
 
 void led_on(struct led *led) {
