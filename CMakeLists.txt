@@ -15,13 +15,15 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 set(CMAKE_C_EXTENSIONS OFF)
 
 # Create compile_commands.json in the build directory and link it to the source directory
-file(CREATE_LINK
-    ${CMAKE_BINARY_DIR}/compile_commands.json
-    ${CMAKE_SOURCE_DIR}/compile_commands.json
-    SYMBOLIC
-    COPY_ON_ERROR
-)
-
+if(NOT ${CMAKE_BINARY_DIR} STREQUAL "${CMAKE_SOURCE_DIR}/build")
+    set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+    file(CREATE_LINK
+        ${CMAKE_BINARY_DIR}/compile_commands.json
+        "${CMAKE_SOURCE_DIR}/build/compile_commands.json"
+        SYMBOLIC
+        COPY_ON_ERROR
+    )
+endif()
 
 # ======================================================================
 # Load CMake Helpers
