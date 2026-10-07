@@ -7,10 +7,7 @@ set_target_properties(${_target} PROPERTIES SUFFIX ".elf")
 target_link_libraries(${_target} PRIVATE
     ${PROJECT_NAME}::project_options
     ${PROJECT_NAME}::compiler_warnings
-    ${PROJECT_NAME}::target_abi
-    bsp::baremetal_linker
-    bsp::startup
-    bsp::driver
+    bsp::runtime
     bsp::led
 )
 set(_map_file "$<TARGET_FILE_DIR:${_target}>/$<TARGET_PROPERTY:NAME>.map")

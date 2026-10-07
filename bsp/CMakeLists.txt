@@ -121,7 +121,22 @@ else()
     message(FATAL_ERROR "Unsupported STM32_DRIVER_TYPE: ${STM32_DRIVER_TYPE}")
 endif()
 
+
 # ======================================================================
 # Add Board Adapters
 # ======================================================================
 add_subdirectory(boards/${BOARD})
+
+
+# ======================================================================
+# BSP No-OS Runtime Environment
+# Aggregates everything needed for ANY no-OS firmware to boot up
+# ======================================================================
+add_library(bsp_runtime INTERFACE)
+target_link_libraries(bsp_runtime INTERFACE
+    ${PROJECT_NAME}::target_abi
+    bsp::baremetal_linker
+    bsp::startup
+    bsp::driver
+)
+add_library(bsp::runtime ALIAS bsp_runtime)
