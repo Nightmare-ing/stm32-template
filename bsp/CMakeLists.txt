@@ -122,10 +122,6 @@ else()
 endif()
 
 # ======================================================================
-# Board Specific Configs, including board drivers and peripherals
+# Add Board Adapters
 # ======================================================================
-if(BOARD STREQUAL "ATK_WARSHIP_F103")
-    add_subdirectory(boards/atk_warship_f103)
-else()
-    message(FATAL_ERROR "Unsupported BOARD: ${BOARD}")
-endif()
+add_subdirectory(boards/${BOARD})
