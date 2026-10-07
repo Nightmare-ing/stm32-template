@@ -2,11 +2,10 @@
 #include <assert.h>
 #include <stddef.h>
 
-void led_init(struct led *led, const struct led_io *io) {
-    assert(led != NULL);
-    assert(io != NULL);
-    assert(io->context != NULL);
-    assert(io->set != NULL);
+int led_init(struct led *led, const struct led_io *io) {
+    if (led == NULL || io == NULL || io->context == NULL || io->set == NULL) {
+        return -1;
+    }
 
     led->io = *io;
     led->is_on = false;

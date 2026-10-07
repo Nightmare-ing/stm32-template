@@ -2,6 +2,10 @@
 
 #include "led/led.h"
 
-void board_led_init();
+enum board_led_id {
+    BOARD_LED_0 = 0,
+    BOARD_LED_1,
+    BOARD_LED_COUNT,
+};
 
-extern const struct led_io board_led0_io;
+int board_led_bind(enum board_led_id id, struct led *led);

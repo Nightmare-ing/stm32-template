@@ -5,11 +5,8 @@
 int main(void) {
     HAL_Init();
 
-    // initialize LED0
-    board_led_init();
-
     struct led led0;
-    led_init(&led0, &board_led0_io);
+    board_led_bind(BOARD_LED_0, &led0);
 
     while (1) {
         led_toggle(&led0);
