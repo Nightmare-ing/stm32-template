@@ -9,8 +9,9 @@ struct led_context {
 
 static void led_hal_set(void *context, bool status) {
     struct led_context *led_ctx = (struct led_context *)context;
-    GPIO_PinState pin_state = status ? GPIO_PIN_SET : GPIO_PIN_RESET;
-    HAL_GPIO_WritePin(led_ctx->port, led_ctx->pin, pin_state);
+    GPIO_PinState pin_state = led_ctx->active_low ? !status : status;
+    HAL_GPIO_WritePin(led_ctx->port, led_ctx->pin,
+                      pin_state ? GPIO_PIN_SET : GPIO_PIN_RESET);
 }
 
 const struct led_io board_led0_io = {
