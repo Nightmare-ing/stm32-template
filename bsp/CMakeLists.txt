@@ -123,12 +123,6 @@ endif()
 
 
 # ======================================================================
-# Add Board Adapters
-# ======================================================================
-add_subdirectory(boards/${BOARD})
-
-
-# ======================================================================
 # BSP No-OS Runtime Environment
 # Aggregates everything needed for ANY no-OS firmware to boot up
 # ======================================================================
@@ -140,3 +134,9 @@ target_link_libraries(bsp_runtime INTERFACE
     bsp::driver
 )
 add_library(bsp::runtime ALIAS bsp_runtime)
+
+
+# ======================================================================
+# Add Board Adapters
+# ======================================================================
+add_subdirectory(boards/${BOARD})
