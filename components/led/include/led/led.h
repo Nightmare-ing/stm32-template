@@ -12,7 +12,7 @@ struct led {
     bool is_on;
 };
 
-void led_init(struct led *led, const struct led_io *io);
+int led_init(struct led *led, const struct led_io *io);
 void led_on(struct led *led);
 void led_off(struct led *led);
 void led_toggle(struct led *led);
