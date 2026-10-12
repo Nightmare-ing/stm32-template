@@ -1,5 +1,5 @@
 # ======================================================================
-# Specify BOARD MCU Family and Model, fetch dependencies
+# Specify BOARD MCU Family and Model
 # ======================================================================
 if(NOT DEFINED BOARD)
     message(FATAL_ERROR "BOARD is not defined. Please specify a board in CMake Presets or CLI.")
@@ -23,8 +23,6 @@ set(MCU_FAMILY_SHORT ${_mcu_family_short} CACHE INTERNAL "Short MCU family")
 string(TOLOWER ${MCU_MODEL} _mcu_model_lower)
 set(MCU_MODEL_LOWER ${_mcu_model_lower} CACHE INTERNAL "Lowercase MCU model")
 
-include("${CMAKE_CURRENT_LIST_DIR}/dependencies.cmake")
-
 
 # ======================================================================
 # Chip Specific Configs
@@ -36,6 +34,12 @@ if(EXISTS "${_chip_config_file}")
 else()
     message(FATAL_ERROR "No chip specific config found for ${MCU_FAMILY_LOWER} at ${_chip_config_file}")
 endif()
+
+
+# ======================================================================
+# Fetch Dependencies
+# ======================================================================
+include("${CMAKE_CURRENT_LIST_DIR}/dependencies.cmake")
 
 
 # ======================================================================
