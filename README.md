@@ -42,15 +42,24 @@ The structure of this STM32 project template is shown as following:
 │       └── src
 │           └── led.c
 ├── README.md
-└── src
+├── src
+│   ├── CMakeLists.txt
+│   └── labs
+│       ├── lab1_led
+│       │   ├── CMakeLists.txt
+│       │   └── main.c
+│       └── lab2_key2led
+│           ├── CMakeLists.txt
+│           └── main.c
+└── tests
     ├── CMakeLists.txt
-    └── labs
-        └── lab1_led
-            ├── CMakeLists.txt
-            └── main.c
+    └── unit
+        ├── CMakeLists.txt
+        └── test_led.c
 ```
 
-This project is managed by modern CMake and built with the `arm-none-eabi` toolchain. Later may add supports for other toolchains (only need to add a new toolchain file in the `cmake` folder and add more presets in the `CMakePresets.json` file).
+This project is managed by modern CMake, built with the `arm-none-eabi` toolchain and supports PC host testing for component logic.
+Later may add supports for other toolchains and other chips(only need to add a new toolchain file in the `cmake` folder and add more presets in the `CMakePresets.json` file).
 
 It's split into several folders:
 
@@ -58,16 +67,18 @@ It's split into several folders:
   .
 - The `src` folder contains the application logic for the project. Multiple applications can be placed in the `src/labs` folder, and each application has its own `CMakeLists.txt` file to build the application into a runnable ELF file.
 - The `bsp` folder contains the board support package (BSP) files, including the startup file, linker script, HAL configuration file, and system initialization file. The `bsp` folder also contains the `dependencies.cmake` file to manage the dependencies, as well as `boards` and `chips` folders to manage the board devices and chip configurations.
+- The `tests` folder contains the unit tests for the components, which can be run on PC host. Each component has its own test file, currently we only use basic `assert` to check the correctness of the component logic, later we may add more advanced testing framework like `cmocka` or `googletest`.
 
 This project doesn't use the STM32CubeMX tool to generate code, instead it manages the dependencies from ST official repos like `cmsis-core`, `cmsis-device-f1` and `stm32f1xx-hal` with CMake. Thus we can avoid STM32CubeMX to mess up git history and have more control over the project.
 However, the project is also compatible with STM32CubeMX generated code. If you want to use STM32CubeMX, it's recommended to use STM32CubeMX to generate code for a new project, then copy the generated files to this template and modify them if necessary.
 
-Dependencies like ARM CMSIS, STM32 CMSIS and STM32 HAL are managed by CMake `FetchContent` with fixed version, and they are downloaded to `build/<preset>/_deps` automatically when you configure the project.
+Dependencies like ARM CMSIS, STM32 CMSIS and STM32 HAL are managed by CMake `FetchContent` with fixed version (version is specified in `bsp/chips/*.cmake` as cached cmake variables), and they are downloaded to `build/<preset>/_deps` automatically when you configure the project.
 Those dependencies are listed in `dependencies.cmake` file under the `build` directory, then two most basic interface library, i.e. `arm::cmsis` and `stm32::cmsis`, are created for static libraries like HAL and LL to link with.
 HAL or LL library target is created in the `bsp/CMakeLists.txt` file with name `bsp::driver`, which provides a common interface for the ELF target to link with. The actual driver library is chosen based on the cached variable `STM32_DRIVE_TYPE`, set by the preset in `CMakePresets.json` file.
 
 The `bsp` folder contains the board support package (BSP) files, including the startup file, linker script, HAL configuration file, and system initialization file. Those files are copied from the official STM32 repos like `cmsis-device-f1`. They may be modified to fit the project, so they're not referenced from the library directly.
 The `bsp/chips/stm32f1.cmake` file contains the chip-specific compilation flags, and offered as a library called `bsp::mcu_config` for any compiled target running on STM32 to link with. If you want to use another chip, you just need to create a new CMake file and offer the same interface library `bsp::mcu_config`.
+This file also set variables for specifying git tags of the dependencies, so that `bsp/dependencies.cmake` can fetch the correct version of the dependencies from ST and ARM official repos.
 
 `bsp/boards` folder contains the board-specific devices, like the `led` device in this template. Those devices offer hardware adapters for applications to use, and they depends on specific driver. For example, in `src/labs/lab1_led/main.c`, first we use `board_led_bind` to bind the `led` struct (from `components/led/include/led/led.h`) to the specific hardware adapter (from `bsp/boards/atk_warship_f103/adapters/led.c`) on board, and then manipulate the `led` struct to control the LED on board with methods from `components/led/include/led/led.h`.
 
@@ -90,7 +101,46 @@ This project abstract away devices operation logic into reusable components in `
 For example, the `led` device in this template needs two hardware interfaces, one is the setter to set LED state, and the other is the context for setter to operate. In this case we use GPIO to control LED, so the context is the GPIO port, pin number and whether it's active high or low.
 Then adapters only need to specify `context` and `setter` for the device, then we can apply methods in `components/led/include/led/led.h` to control the LED on board.
 
+`tests` folder contains the unit tests for the components, which can be run on PC host independently to validate the correctness of the component logic. If the components pass all the unit tests and there's still some bug in the application running on the MCU, then the bug is likely caused by the hardware adapter or the driver, and we can debug it with a debugger like J-Link.
+With this approach, we can quickly find and fix the bug, thus speed up the development process.
+
 ## Usage
+
+### Build ELF Files
+
+To build the project, first you need to install the `arm-none-eabi` toolchain, and then configure the project with CMake with
+
+```bash
+cmake --preset <configure_preset_name>
+```
+
+This command generates the build files in the `build/<preset_name>` folder, and then you can build the ELF files with
+
+```bash
+cmake --build --preset <build_preset_name>
+```
+
+The generated ELF files are located in the `build/<preset_name>/src/labs/<lab_name>` folder, and the generated .bin and .hex files are located in the same folder.
+
+### Build and Run Unit Tests on PC Host
+
+To build and run the unit tests on PC host, first you need to configure the project with
+
+```bash
+cmake --preset <configure_preset_name_host_test>
+```
+
+Then you can build the unit tests with
+
+```bash
+cmake --build --preset <build_preset_name_host_test>
+```
+
+Finally you can run the unit tests with
+
+```bash
+ctest --preset <test_preset_name_host_test>
+```
 
 ### Switch to Different MCU Chip or Board
 
