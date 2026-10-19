@@ -50,7 +50,7 @@ target_sources(bsp_startup PRIVATE
     "${CMAKE_CURRENT_LIST_DIR}/startup/startup_${MCU_MODEL_LOWER}.s"
     "${CMAKE_CURRENT_LIST_DIR}/startup/system_${MCU_FAMILY_LOWER}xx.c"
 )
-target_link_libraries(bsp_startup PUBLIC bsp::mcu_config stm32::cmsis arm::cmsis)
+target_link_libraries(bsp_startup PUBLIC bsp::mcu_config stm32::cmsis)
 STRING(TOUPPER ${MCU_MODEL} _mcu_model_upper)
 set(_linker_script "${CMAKE_CURRENT_LIST_DIR}/ldscripts/${_mcu_model_upper}_FLASH.ld")
 target_link_options(bsp_startup INTERFACE "-T${_linker_script}")
@@ -77,7 +77,7 @@ if(STM32_DRIVER_TYPE STREQUAL "LL")
     message(STATUS "Configuring project for ${MCU_MODEL} with LL driver")
     # LL Library: stm32::ll
     add_library(stm32_ll STATIC)
-    target_link_libraries(stm32_ll PUBLIC stm32::cmsis arm::cmsis bsp::mcu_config)
+    target_link_libraries(stm32_ll PUBLIC stm32::cmsis bsp::mcu_config)
     # Headers might couple with each other, so not use File Set to avoid missing headers
     target_include_directories(stm32_ll SYSTEM PUBLIC
         ${stm32_hal_driver_SOURCE_DIR}/Inc
@@ -98,7 +98,7 @@ elseif(STM32_DRIVER_TYPE STREQUAL "HAL")
     message(STATUS "Configuring project for ${MCU_MODEL} with HAL driver")
     # HAL Library: stm32::hal
     add_library(stm32_hal STATIC)
-    target_link_libraries(stm32_hal PUBLIC stm32::cmsis arm::cmsis bsp::mcu_config)
+    target_link_libraries(stm32_hal PUBLIC stm32::cmsis bsp::mcu_config)
     target_include_directories(stm32_hal SYSTEM PUBLIC
         ${CMAKE_CURRENT_LIST_DIR}/hal_config
         ${stm32_hal_driver_SOURCE_DIR}/Inc
@@ -118,7 +118,7 @@ elseif(STM32_DRIVER_TYPE STREQUAL "HAL")
 elseif(STM32_DRIVER_TYPE STREQUAL "BARE")
     message(STATUS "Configuring project for ${MCU_MODEL} with bare-metal / CMSIS only")
     add_library(bsp_driver_bare INTERFACE)
-    target_link_libraries(bsp_driver_bare INTERFACE stm32::cmsis arm::cmsis)
+    target_link_libraries(bsp_driver_bare INTERFACE stm32::cmsis)
     add_library(bsp::driver ALIAS bsp_driver_bare)
 
 else()

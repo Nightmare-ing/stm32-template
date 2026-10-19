@@ -41,6 +41,9 @@ target_include_directories(arm_cmsis SYSTEM INTERFACE
 add_library(arm::cmsis ALIAS arm_cmsis)
 
 add_library(stm32_cmsis INTERFACE)
+target_link_libraries(stm32_cmsis INTERFACE
+    arm_cmsis
+)
 target_include_directories(stm32_cmsis SYSTEM INTERFACE
     ${stm32_cmsis_SOURCE_DIR}/Include
 )
