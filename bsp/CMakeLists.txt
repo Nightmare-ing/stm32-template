@@ -136,6 +136,7 @@ target_link_libraries(bsp_runtime INTERFACE
     bsp::baremetal_linker
     bsp::startup
     bsp::driver
+    bsp::board_core
 )
 add_library(bsp::runtime ALIAS bsp_runtime)
 
